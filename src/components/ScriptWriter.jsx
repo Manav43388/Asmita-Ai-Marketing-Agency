@@ -32,47 +32,71 @@ export default function ScriptWriter({ products }) {
       let hashtags = '';
 
       if (language === 'Gujarati') {
-        script = `[શરૂઆતનો હૂક - પ્રથમ ૩ સેકન્ડ]
-🎥 વિઝ્યુઅલ: ભગવાનના મંદિરમાં ધૂપ પ્રગટાવતા હાથ. બેકગ્રાઉન્ડમાં ધીમું વાંસળી સંગીત.
-🗣️ વૉઇસઓવર: "શું તમને ખબર છે? સવારે પ્રગટાવેલી અગરબત્તીની સુગંધ તમારા આખા દિવસના મૂડને બદલી શકે છે!"
+        script = `Scene 1:
+Visual: સવારની સૂર્યપ્રકાશમાં હોમ મંદિરનો શાંત ક્લોઝ-અપ શોટ, ધૂપ સ્ટેન્ડ ખાલી છે.
+Voiceover: "શું તમે જાણો છો કે શા માટે સવારે ઘરમાં સુગંધ ફેલાવવી જરૂરી છે?"
 
-[મુખ્ય ભાગ - ૩ થી ૧૨ સેકન્ડ]
-🎥 વિઝ્યુઅલ: અસલી ${prodName} ની અગરબત્તીઓ અને તેમાંથી નીકળતો ધીમો સુગંધિત ધુમાડો.
-🗣️ વૉઇસઓવર: "અસ્મિતા ગૃહ ઉદ્યોગની ${prodName} કેમિકલ ફ્રી કોલસા વગર બનેલી છે. આમાં છે ૧૦૦% કુદરતી સુગંધ જે માથાનો દુખાવો નથી આપતી અને મનને શાંત કરે છે. ૨૫ વર્ષથી વધુ અનુભવ સાથે અમે લાવીએ છીએ શુદ્ધતા."
+Scene 2:
+Visual: હાથમાં અસ્મિતા ગૃહ ઉદ્યોગનું પ્રીમિયમ ${prodName} પેકેટ લાવીને કેમેરા સામે ધરે છે.
+Voiceover: "તે માટે જ અમે લાવ્યા છીએ અસ્મિતા ગૃહ ઉદ્યોગની આ ખાસ ${prodName}."
 
-[કૉલ-ટુ-એક્શન - ૧૨ થી ૧૫ સેકન્ડ]
-🎥 વિઝ્યુઅલ: પેકિંગ બોક્સ સાથે વોટ્સએપ નંબર +91 63522 91433 ની પ્લેટ દેખાય.
-🗣️ વૉઇસઓવર: "આજે જ હોલસેલ કે રીટેલ ઓર્ડર કરવા માટે બાયોમાં આપેલ લિંક પર ક્લિક કરો અથવા કમેન્ટ કરો!"`;
+Scene 3:
+Visual: અગરબત્તીને હળવેથી સળગાવીને ધૂપ સ્ટેન્ડમાં મૂકવાનો ક્લોઝ-અપ શોટ.
+Voiceover: "કોલસા વગર બનેલી આ સ્ટીક સહેલાઈથી સળગે છે અને શુદ્ધ સુગંધ આપે છે."
+
+Scene 4:
+Visual: અગરબત્તીમાંથી સુંદર આકારમાં વહેતો ધુમાડો અને પરિવાર પૂજા કરી રહ્યો છે.
+Voiceover: "જે માથાનો દુખાવો આપ્યા વગર પૂરા ઘરમાં મંદિર જેવી પવિત્રતા અને દિવ્ય શાંતિ ફેલાવે છે."
+
+Scene 5:
+Visual: સ્ક્રીન પર વોટ્સએપ નંબર +91 63522 91433 અને ઓર્ડરની માહિતી દેખાય.
+Voiceover: "આજે જ હોલસેલ કે રીટેલ ઓર્ડર કરવા માટે બાયોમાં લિંક પર ક્લિક કરો અથવા કમેન્ટ કરો!"`;
 
         caption = `🙏 સવારની પૂજામાં લાવો મંદિર જેવી શુદ્ધતા! \n\nઅસ્મિતા ગૃહ ઉદ્યોગની ખાસ "${prodName}" સાથે આપના ઘર અને મંદિરને દિવ્ય સુગંધથી મહેકાવો. \n\n✨ કેમિકલ રહિત અને કુદરતી તેલોથી બનેલ\n✨ લાંબો સમય ચાલતી સુગંધ\n✨ ગુજરાતના ૨૫+ વર્ષ જુના ભરોસાપાત્ર ઉત્પાદક તરફથી સીધું જ\n\n💼 હોલસેલ વેપારીઓ અને રીટેલ દુકાનદારો માટે ખાસ કિંમતે ઉપલબ્ધ. ઓર્ડર માટે હમણાં જ ડીએમ કરો! \n\n#AsmitaGruhUdhyog #incensesticks #dailyworship`;
         hashtags = `#AsmitaGruhUdhyog #AgarbattiWholesale #NaturalFragrance #PoojaRoom #MadeInGujarat #GujaratiBusiness #HomeFragrance #DailyPooja #DhoopSticks`;
       } else if (language === 'Hindi') {
-        script = `[शुरुआती हुक - प्रथम 3 सेकंड]
-🎥 विजुअल: मंदिर के दीये के पास सुलगती हुई ${prodName}। बैकग्राउंड में मधुर बांसुरी धुन।
-🗣️ वॉइसओवर: "क्या आपके घर में भी अगरबत्ती जलाने से सिरदर्द होता है? तो इस वीडियो को ध्यान से देखें!"
+        script = `Scene 1:
+Visual: सुबह की धूप में घर के मंदिर का एक शांत क्लोज-अप शॉट, जहां अभी शांति है।
+Voiceover: "क्या आप जानते हैं कि घर के वातावरण को पवित्र रखना क्यों जरूरी है?"
 
-[मुख्य भाग - 3 से 12 सेकंड]
-🎥 विजुअल: हाथों में पैक खोलते हुए और खुशबू महसूस करते हुए।
-🗣️ वॉइसओवर: "अस्मिता गृह उद्योग की ${prodName} कोयला-मुक्त और 100% प्राकृतिक सुगंधित जड़ी-बूटियों से बनी है। यह आपके घर के वातावरण को पवित्र और सकारात्मक बनाती है बिना किसी केमिकल के।"
+Scene 2:
+Visual: हाथों में अस्मिता गृह उद्योग का प्रीमियम ${prodName} पैकेट कैमरे के सामने लाया जाता है।
+Voiceover: "इसीलिए हम आपके लिए लाए हैं अस्मिता गृह उद्योग की यह विशेष ${prodName}।"
 
-[कॉल-टू-एक्शन - 12 से 15 सेकंड]
-🎥 विजुअल: फोन स्क्रीन पर व्हाट्सएप चैट और नंबर +91 63522 91433 का पॉपअप।
-🗣️ वॉइसओवर: "अपने घर या दुकान के लिए थोक दामों में ऑर्डर करने के लिए अभी बायो में लिंक पर क्लिक करें!"`;
+Scene 3:
+Visual: अगरबत्ती को प्यार से जलाकर सुंदर स्टैंड में स्थापित करने का क्लोज-अप।
+Voiceover: "कोयला-मुक्त प्राकृतिक जड़ी-बूटियों से बनी यह स्टिक आसानी से सुलगती है।"
+
+Scene 4:
+Visual: कमरे में तैरती हुई सुंदर सुगंधित हवा और ध्यान में लीन एक व्यक्ति का चेहरा।
+Voiceover: "यह बिना किसी केमिकल के, आपके घर को दिव्य खुशबू और मानसिक शांति से भर देती है।"
+
+Scene 5:
+Visual: स्क्रीन पर व्हाट्सएप नंबर +91 63522 91433 और डीएम डिटेल्स का एनीमेशन।
+Voiceover: "अपने घर या दुकान के लिए थोक दामों में ऑर्डर करने के लिए अभी हमसे संपर्क करें!"`;
 
         caption = `✨ अपने घर को दें शुद्ध और सात्विक वातावरण! 🙏\n\nअस्मिता गृह उद्योग की प्रीमियम "${prodName}" के साथ हर सुबह की शुरुआत करें। यह प्राकृतिक तेलों और सुगंधित जड़ी-बूटियों से निर्मित है।\n\n✔ 100% कोयला मुक्त और सुरक्षित\n✔ सिरदर्द से राहत और मानसिक शांति\n✔ सीधे फैक्टरी रेट पर उपलब्ध\n\n📞 होलसेल या रिटेल ऑर्डर के लिए आज ही हमें DM करें या व्हाट्सएप करें!`;
         hashtags = `#AsmitaGruhUdhyog #IncenseSticks #TempleAura #NaturalIncense #PoojaEssential #SandalwoodFragrance #MadeInIndia #B2BWholesale`;
       } else {
-        script = `[Opening Hook - First 3 Seconds]
-🎥 Visual: A close-up cinematic shot of lighting ${prodName} in slow motion. Sunlight reflecting through the rising smoke.
-🗣️ Voiceover: "If you want to recreate that peaceful, positive temple aroma inside your home..."
+        script = `Scene 1:
+Visual: A quiet close-up shot of a home prayer room in the morning light, feeling incomplete.
+Voiceover: "Ever wondered why some mornings feel much more peaceful and focused than others?"
 
-[Body - 3 to 12 Seconds]
-🎥 Visual: Stacking wholesale packs of ${prodName} into shipping cartons. Shows natural resins.
-🗣️ Voiceover: "Try Asmita Gruh Udhyog's premium ${prodName}. Crafted for over 25 years in Gujarat using pure botanical extracts. Non-toxic, coal-free, and guaranteed headache-free."
+Scene 2:
+Visual: A hand holds up a premium pack of Asmita's ${prodName} in front of the camera.
+Voiceover: "It all starts with this - Asmita Gruh Udhyog's authentic ${prodName}."
 
-[Call-To-Action - 12 to 15 Seconds]
-🎥 Visual: A hand holding a smartphone showcasing the WhatsApp icon and order details.
-🗣️ Voiceover: "Send us a DM or message us on WhatsApp to get factory wholesale pricing today!"`;
+Scene 3:
+Visual: Extreme close-up of a match lighting the incense stick, glowing amber.
+Voiceover: "Charcoal-free and hand-rolled, it burns slowly, releasing rich botanicals."
+
+Scene 4:
+Visual: Cinematic smoke rings drifting through sunbeams, creating a temple-like ambiance.
+Voiceover: "It instantly fills your space with a calming, stress-free aroma without any chemical headaches."
+
+Scene 5:
+Visual: Close-up of a smartphone screen showing WhatsApp contact number +91 63522 91433.
+Voiceover: "Click the link in our bio or send us a DM to order wholesale at factory pricing today!"`;
 
         caption = `Elevate your daily meditation & spiritual lifestyle with the pure, calming aroma of Asmita's ${prodName}. 🕯️\n\nDirectly manufactured in Gujarat with 25+ years of trust, our incense products contain zero synthetic chemicals.\n\n✨ Eco-friendly & charcoal-free\n✨ Pure traditional fragrances\n✨ Wholesale bulk pricing available for stores & temples\n\n👉 Click the link in our bio to shop or inquire!`;
         hashtags = `#AsmitaGruhUdhyog #IncenseSticks #Aromatherapy #MeditationSpace #B2BRetail #WholesaleSupplier #IndianSpiritual #SpiritualHome`;

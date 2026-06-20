@@ -113,25 +113,41 @@ export default function ReelProduction() {
         {productionType === 'b2b' ? (
           <div className="flex flex-col gap-4 mt-2">
             <div className="p-4 rounded bg-[rgba(255,255,255,0.01)] border-l-4 border-l-[var(--primary)] flex flex-col gap-2">
-              <strong style={{ color: 'var(--text-primary)' }}>Scene 1: The B2B Wholesale Hook (0 - 3s)</strong>
+              <strong style={{ color: 'var(--text-primary)' }}>Scene 1 – Hook / Attention Grabber (0 - 3s)</strong>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                <strong>Visual:</strong> Slow-motion shot of wholesale cardboard cartons being stacked. A packing label reading "Surat, Gujarat" is clearly stuck on top.
+                <strong>Visual:</strong> Slow-motion shot of wholesale cardboard cartons being stacked. A packing label reading "Surat, Gujarat - Wholesale Supply" is clearly stuck on top.
               </p>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Camera Angle: Eye Level, static tripod shot.</span>
             </div>
 
             <div className="p-4 rounded bg-[rgba(255,255,255,0.01)] border-l-4 border-l-[var(--primary)] flex flex-col gap-2">
-              <strong style={{ color: 'var(--text-primary)' }}>Scene 2: Inside the Factory (3 - 10s)</strong>
+              <strong style={{ color: 'var(--text-primary)' }}>Scene 2 – Product Introduction (3 - 8s)</strong>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                <strong>Visual:</strong> Close-up tracking shot of raw materials (natural gums, sandalwood powders, bamboo sticks). Slide transition into packaging workers boxing the Rose Premium packs.
+                <strong>Visual:</strong> Hands open a master wholesale carton to reveal colorful, neatly packed boxes of Asmita Gugal and Rose Premium incense sticks.
+              </p>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Camera Angle: Medium close-up, panning down.</span>
+            </div>
+
+            <div className="p-4 rounded bg-[rgba(255,255,255,0.01)] border-l-4 border-l-[var(--primary)] flex flex-col gap-2">
+              <strong style={{ color: 'var(--text-primary)' }}>Scene 3 – Product Demonstration (8 - 15s)</strong>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                <strong>Visual:</strong> Close-up tracking shot of raw materials (natural gums, sandalwood powders, bamboo sticks). Slide transition into packaging workers boxing the premium packs.
               </p>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Camera Angle: Close-up macro tracking, hand-held.</span>
             </div>
 
             <div className="p-4 rounded bg-[rgba(255,255,255,0.01)] border-l-4 border-l-[var(--primary)] flex flex-col gap-2">
-              <strong style={{ color: 'var(--text-primary)' }}>Scene 3: Direct Factory Pricing (10 - 15s)</strong>
+              <strong style={{ color: 'var(--text-primary)' }}>Scene 4 – Experience / Benefits (15 - 25s)</strong>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                <strong>Visual:</strong> Hands typing on WhatsApp to order, close up on the screen (displays bulk list prices). Cut to the shipping labels.
+                <strong>Visual:</strong> A retail shop owner arranging Asmita products on their storefront shelf. Customers walk in, smell the ambient aroma, and purchase the boxes. Text overlay showing "25+ Years Experience & High Margins".
+              </p>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Camera Angle: Wide shot, slow panning right.</span>
+            </div>
+
+            <div className="p-4 rounded bg-[rgba(255,255,255,0.01)] border-l-4 border-l-[var(--primary)] flex flex-col gap-2">
+              <strong style={{ color: 'var(--text-primary)' }}>Scene 5 – Closing / Call To Action (25 - 30s)</strong>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                <strong>Visual:</strong> Close up of a smartphone screen showing WhatsApp contact number +91 63522 91433 and a finger tapping "Send Catalog" text overlay.
               </p>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Camera Angle: POV over-the-shoulder.</span>
             </div>
@@ -139,27 +155,43 @@ export default function ReelProduction() {
         ) : (
           <div className="flex flex-col gap-4 mt-2">
             <div className="p-4 rounded bg-[rgba(255,255,255,0.01)] border-l-4 border-l-[var(--saffron)] flex flex-col gap-2">
-              <strong style={{ color: 'var(--text-primary)' }}>Scene 1: Lighting the Stick (0 - 3s)</strong>
+              <strong style={{ color: 'var(--text-primary)' }}>Scene 1 – Hook / Attention Grabber (0 - 3s)</strong>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                <strong>Visual:</strong> Macro close-up of a match stick lighting Gugal Dhoop. Flame flares, glows orange, then blown out to leave rising white smoke rings.
+                <strong>Visual:</strong> Macro close-up of a match stick lighting an incense stick in a dim temple room. Flame flares, glows orange, then blown out to leave rising white smoke rings.
               </p>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Camera Angle: Extreme close-up (Macro lens or zoom), backlit.</span>
             </div>
 
             <div className="p-4 rounded bg-[rgba(255,255,255,0.01)] border-l-4 border-l-[var(--saffron)] flex flex-col gap-2">
-              <strong style={{ color: 'var(--text-primary)' }}>Scene 2: Pooja Room Ambiance (3 - 10s)</strong>
+              <strong style={{ color: 'var(--text-primary)' }}>Scene 2 – Product Introduction (3 - 8s)</strong>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                <strong>Visual:</strong> A clean, well-lit pooja plate containing copper vessels, flowers, and the burning incense stick. Smoke trails float upward into beautiful sunbeams.
+                <strong>Visual:</strong> Hands bring a pack of Asmita premium Dhoop/Agarbatti into the sunbeam, highlighting the beautiful foil-printed traditional Indian design.
               </p>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Camera Angle: Medium shot, slow pan left.</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Camera Angle: Medium shot, centering the packaging.</span>
             </div>
 
             <div className="p-4 rounded bg-[rgba(255,255,255,0.01)] border-l-4 border-l-[var(--saffron)] flex flex-col gap-2">
-              <strong style={{ color: 'var(--text-primary)' }}>Scene 3: Peace & Wellness CTA (10 - 15s)</strong>
+              <strong style={{ color: 'var(--text-primary)' }}>Scene 3 – Product Demonstration (8 - 15s)</strong>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                <strong>Visual:</strong> A family member sitting in meditation. Slowly fades into showing the Asmita logo and contact information.
+                <strong>Visual:</strong> Placing the burning stick in a brass stand in a clean pooja room. The smoke begins to rise in front of beautiful deity idols and flowers.
+              </p>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Camera Angle: Close-up, tracking the smoke trails.</span>
+            </div>
+
+            <div className="p-4 rounded bg-[rgba(255,255,255,0.01)] border-l-4 border-l-[var(--saffron)] flex flex-col gap-2">
+              <strong style={{ color: 'var(--text-primary)' }}>Scene 4 – Experience / Benefits (15 - 25s)</strong>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                <strong>Visual:</strong> A family member sitting in meditation. The atmosphere is calm and filled with a thick, aromatic, chemical-free fragrance that relaxes their facial expressions.
               </p>
               <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Camera Angle: Wide shot, slow zoom out.</span>
+            </div>
+
+            <div className="p-4 rounded bg-[rgba(255,255,255,0.01)] border-l-4 border-l-[var(--saffron)] flex flex-col gap-2">
+              <strong style={{ color: 'var(--text-primary)' }}>Scene 5 – Closing / Call To Action (25 - 30s)</strong>
+              <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
+                <strong>Visual:</strong> The camera pans down to show the WhatsApp support and ordering details on the screen, accompanied by an elegant logo overlay.
+              </p>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Camera Angle: Eye Level, centering the contact graphic.</span>
             </div>
           </div>
         )}
