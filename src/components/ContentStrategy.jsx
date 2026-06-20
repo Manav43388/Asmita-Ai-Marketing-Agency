@@ -41,7 +41,7 @@ export default function ContentStrategy({ calendar, setCalendar, products }) {
     : calendar.filter(c => c.category === filterCategory);
 
   return (
-    <div className="grid grid-cols-3 gap-6" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
+    <div className="grid-layout-2-1">
       
       {/* Calendar Listing */}
       <div className="flex flex-col gap-6">

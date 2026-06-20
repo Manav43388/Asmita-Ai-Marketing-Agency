@@ -46,7 +46,7 @@ export default function PerformanceAnalyst() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
+      <div className="grid-layout-2-1">
         
         {/* Left Panel: Campaign list & visual charts */}
         <div className="flex flex-col gap-6">

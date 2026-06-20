@@ -30,7 +30,7 @@ export default function TrendResearch() {
   return (
     <div className="flex flex-col gap-8">
       {/* Overview Cards */}
-      <div className="grid grid-cols-3 gap-6" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+      <div className="grid-layout-1-1">
         
         {/* Left Side: Hooks & Audios */}
         <div className="flex flex-col gap-6">

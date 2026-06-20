@@ -5,7 +5,7 @@ export default function ReelProduction() {
   const [productionType, setProductionType] = useState('b2b');
 
   return (
-    <div className="grid grid-cols-2 gap-6" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+    <div className="grid-layout-1-1">
       
       {/* Recording Gear & Setup Checklist */}
       <div className="flex flex-col gap-6">

@@ -84,7 +84,7 @@ export default function ScriptWriter({ products }) {
   };
 
   return (
-    <div className="grid grid-cols-3 gap-6" style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '24px' }}>
+    <div className="grid-layout-1-2">
       
       {/* Script Generator Input Form */}
       <div className="glass-panel p-6 flex flex-col gap-4 h-fit">

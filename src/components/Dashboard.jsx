@@ -103,8 +103,8 @@ export default function Dashboard({ products, calendar, setCalendar, setActiveTa
     <div className="flex flex-col gap-8">
       
       {/* CEO Message Banner */}
-      <div className="glass-panel p-6 border-l-4 border-l-[var(--primary)] flex justify-between items-center flex-wrap gap-4" style={{ background: 'linear-gradient(90deg, rgba(212,175,55,0.05) 0%, transparent 100%)' }}>
-        <div>
+      <div className="ceo-banner">
+        <div className="ceo-banner-text">
           <span style={{ fontSize: '0.8rem', color: 'var(--primary)', textTransform: 'uppercase', fontWeight: 'bold', tracking: '0.05em' }}>
             Marketing CEO Statement
           </span>
@@ -122,7 +122,7 @@ export default function Dashboard({ products, calendar, setCalendar, setActiveTa
       </div>
 
       {/* Main Grid: Approvals, Actions, Roster */}
-      <div className="grid grid-cols-2 gap-6" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
+      <div className="grid-layout-2-1">
         
         {/* Left column: Approval center & Weekly Planning */}
         <div className="flex flex-col gap-6">
@@ -139,25 +139,27 @@ export default function Dashboard({ products, calendar, setCalendar, setActiveTa
 
             <div className="flex flex-col gap-4 mt-2">
               {approvals.map(app => (
-                <div key={app.id} className="p-4 rounded-lg bg-[rgba(255,255,255,0.01)] border border-[var(--border-gold)] flex justify-between items-start gap-4">
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <span style={{ fontSize: '0.75rem', padding: '2px 6px', borderRadius: '4px', background: 'var(--maroon)', color: 'var(--text-primary)' }}>
-                        {app.type}
-                      </span>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Lang: {app.lang}</span>
+                <div key={app.id} className="approval-card">
+                  <div className="approval-card-header">
+                    <div className="flex items-center gap-2">
+                      <span className="approval-type-tag">{app.type}</span>
+                      <span className="approval-lang-tag">Lang: {app.lang}</span>
                     </div>
-                    <h4 className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{app.theme}</h4>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginTop: '4px' }}>{app.desc}</p>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--primary)', display: 'block', marginTop: '6px' }}>Focus: {app.product}</span>
+                    <span className="approval-status-tag">{app.status}</span>
                   </div>
-                  <button 
-                    onClick={() => handleApprove(app.id)}
-                    className="btn-primary py-1 px-3 text-xs shrink-0"
-                    style={{ padding: '6px 12px', fontSize: '0.8rem' }}
-                  >
-                    <Check size={14} /> Approve Campaign
-                  </button>
+                  <div className="approval-card-body">
+                    <h4>{app.theme}</h4>
+                    <p>{app.desc}</p>
+                    <div className="approval-card-focus">Focus: {app.product}</div>
+                  </div>
+                  <div className="approval-card-footer">
+                    <button 
+                      onClick={() => handleApprove(app.id)}
+                      className="btn-primary btn-sm"
+                    >
+                      <Check size={12} /> Approve Campaign
+                    </button>
+                  </div>
                 </div>
               ))}
 
@@ -209,20 +211,19 @@ export default function Dashboard({ products, calendar, setCalendar, setActiveTa
 
           <div className="flex flex-col gap-3 mt-2">
             {agents.map((agent, idx) => (
-              <div key={idx} className="flex justify-between items-center p-3 rounded bg-[rgba(255,255,255,0.01)] border border-[rgba(212,175,55,0.05)]">
+              <div key={idx} className="agent-roster-item">
                 <div>
                   <h4 className="font-semibold text-xs" style={{ color: 'var(--text-primary)' }}>{agent.name}</h4>
                   <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', marginTop: '2px' }}>{agent.role}</p>
                 </div>
-                <span style={{ 
-                  fontSize: '0.65rem', 
-                  padding: '2px 6px', 
-                  borderRadius: '4px', 
-                  background: agent.status === 'Active' || agent.status === 'Synched' ? 'rgba(16,185,129,0.1)' : 'rgba(212,175,55,0.1)',
-                  color: agent.status === 'Active' || agent.status === 'Synched' ? '#10b981' : 'var(--primary)',
-                  fontWeight: 'bold',
-                  textTransform: 'uppercase'
-                }}>
+                <span 
+                  className="agent-badge-pill"
+                  style={{ 
+                    background: agent.status === 'Active' || agent.status === 'Synched' ? 'rgba(16,185,129,0.1)' : 'rgba(212,175,55,0.1)',
+                    color: agent.status === 'Active' || agent.status === 'Synched' ? '#10b981' : 'var(--primary)',
+                    border: agent.status === 'Active' || agent.status === 'Synched' ? '1px solid rgba(16,185,129,0.2)' : '1px solid rgba(212,175,55,0.2)'
+                  }}
+                >
                   {agent.status}
                 </span>
               </div>

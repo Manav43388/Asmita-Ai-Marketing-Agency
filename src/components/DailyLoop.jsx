@@ -102,7 +102,7 @@ export default function DailyLoop({ products, calendar, setCalendar }) {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-6" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+    <div className="grid-layout-1-1">
       
       {/* Simulation Controls & Terminal */}
       <div className="flex flex-col gap-6">

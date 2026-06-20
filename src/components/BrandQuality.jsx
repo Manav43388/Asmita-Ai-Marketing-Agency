@@ -60,7 +60,7 @@ export default function BrandQuality() {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-6" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+    <div className="grid-layout-1-1">
       
       {/* Script Audit Submitter */}
       <div className="glass-panel p-6 flex flex-col gap-4">
