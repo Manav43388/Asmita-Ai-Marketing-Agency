@@ -56,6 +56,13 @@ export default function ScriptWriter({ products = [] }) {
     productVisibleThroughout: true
   });
 
+  // Flow Shot Reference System States
+  const [characterLock, setCharacterLock] = useState(null);
+  const [productLock, setProductLock] = useState(null);
+  const [referenceFrame, setReferenceFrame] = useState(null);
+  const [driftRisks, setDriftRisks] = useState({ character: 'LOW', product: 'LOW', environment: 'LOW' });
+  const [efficiencyScore, setEfficiencyScore] = useState(100);
+
   // Set default product from props if available
   useEffect(() => {
     if (products.length > 0 && !selectedProduct) {
@@ -67,6 +74,121 @@ export default function ScriptWriter({ products = [] }) {
     navigator.clipboard.writeText(text);
     setCopiedSection(sectionId);
     setTimeout(() => setCopiedSection(null), 2000);
+  };
+
+  // Character Lock Engine - Formulates strict visual parameters for character consistency
+  const characterLockEngine = (bible, preset) => {
+    let charLock = {
+      faceShape: "Symmetrical oval, soft jawline",
+      age: bible.age || "34",
+      gender: bible.gender || "Female",
+      hair: "Dark black, neatly bound, sleek texture",
+      skinTone: "Warm wheatish complexion, natural skin texture",
+      clothing: bible.clothing || "Cream traditional cotton attire",
+      accessories: "Minimalist, gold nose ring, red bindi on forehead"
+    };
+
+    if (preset === 'Modern Minimalist') {
+      charLock.faceShape = "Modern features, soft cheekbones";
+      charLock.hair = "Neat hair bun, clean styling";
+      charLock.accessories = "None, completely clean modern profile";
+    } else if (preset === 'Dramatic Cinematic') {
+      charLock.faceShape = "Strong defined jawline, intense eyes";
+      charLock.hair = "Long hair tied back firmly";
+      charLock.accessories = "None, focused monastic expression";
+    } else if (preset === 'Raw ASMR / Documentary') {
+      charLock.faceShape = "Concentrated expression, looking downwards";
+      charLock.hair = "Simple casual styling";
+      charLock.accessories = "Khadi work gloves or bare hands";
+    }
+
+    if (bible.mainCharacter && bible.mainCharacter.toLowerCase().includes('grandmother')) {
+      charLock.faceShape = "Kind wrinkled face, warm eyes, spectacles";
+      charLock.hair = "Sleek silver-grey hair tied in a neat bun";
+      charLock.accessories = "Traditional dadi specs, red bindi";
+    }
+
+    return charLock;
+  };
+
+  // Product Lock Engine - Formulates packaging, size, and styling properties
+  const productLockEngine = (productObj, preset) => {
+    const isDhoop = productObj.name.toLowerCase().includes('dhoop');
+    return {
+      shape: isDhoop ? "Cylindrical thick dhoop stick" : "Sleek cylindrical incense stick with bamboo core",
+      packaging: `Premium gold-embossed ${productObj.name} cardboard packaging box`,
+      color: productObj.name.toLowerCase().includes('rose') ? "Vibrant rose crimson" : 
+             productObj.name.toLowerCase().includes('chandan') ? "Deep saffron gold" : 
+             productObj.name.toLowerCase().includes('gugal') ? "Traditional amber brown" : "Elegant royal purple",
+      logoPosition: "Centered in the top-third section of the box packaging",
+      size: isDhoop ? "3 inches in length, 12mm thickness" : "9 inches in length, charcoal-free uniform coat"
+    };
+  };
+
+  // Visual Drift Detector - Evaluates LOW/MEDIUM/HIGH risk ratings
+  const getDriftRisks = (evaluatedClips, bible) => {
+    if (!bible || evaluatedClips.length === 0) {
+      return { character: 'LOW', product: 'LOW', environment: 'LOW' };
+    }
+
+    let character = 'LOW';
+    if (!bible.mainCharacter || bible.mainCharacter.trim().length < 5) {
+      character = 'HIGH';
+    } else if (!isBibleLocked) {
+      character = 'MEDIUM';
+    }
+
+    let product = 'LOW';
+    const visibleClipsCount = evaluatedClips.filter(c => c.productVisible).length;
+    const visibilityPercent = (visibleClipsCount / evaluatedClips.length) * 100;
+    
+    let consecutiveInvisible = false;
+    for (let i = 1; i < evaluatedClips.length; i++) {
+      if (!evaluatedClips[i].productVisible && !evaluatedClips[i-1].productVisible) {
+        consecutiveInvisible = true;
+      }
+    }
+
+    if (visibilityPercent < 70 || consecutiveInvisible) {
+      product = 'HIGH';
+    } else if (!bible.productDetails || bible.productDetails.trim().length < 10) {
+      product = 'MEDIUM';
+    }
+
+    let environment = 'LOW';
+    if (!bible.background || bible.background.trim().length < 5) {
+      environment = 'HIGH';
+    } else if (stylePreset === 'Raw ASMR / Documentary') {
+      environment = 'MEDIUM';
+    }
+
+    return { character, product, environment };
+  };
+
+  // Flow Credit Efficiency Score (0-100)
+  const calculateEfficiencyScore = (evaluatedClips, bible, risks) => {
+    if (!bible || evaluatedClips.length === 0) return 0;
+
+    let score = 100;
+
+    if (risks.character === 'HIGH') score -= 25;
+    else if (risks.character === 'MEDIUM') score -= 10;
+
+    if (risks.product === 'HIGH') score -= 25;
+    else if (risks.product === 'MEDIUM') score -= 10;
+
+    if (risks.environment === 'HIGH') score -= 20;
+    else if (risks.environment === 'MEDIUM') score -= 8;
+
+    if (evaluatedClips.length === 8) score -= 10;
+    else if (evaluatedClips.length === 6) score -= 5;
+
+    const continuity = calculateContinuityScore(evaluatedClips, bible);
+    if (continuity < 90) {
+      score -= (90 - continuity) * 1.5;
+    }
+
+    return Math.max(0, Math.min(100, Math.round(score)));
   };
 
   // Flow Quality Engine - Runs after storyboard generation to upgrade prompt quality
@@ -213,7 +335,10 @@ export default function ScriptWriter({ products = [] }) {
     // Block structures check
     let missingBlocks = 0;
     evaluatedClips.forEach(clip => {
-      const prompt = getCompiledFlowPromptInternal(clip, bible, evaluatedClips.length);
+      // Create local fallback locks if they aren't generated yet for the continuity score loop
+      const tempCharLock = characterLock || characterLockEngine(bible, stylePreset);
+      const tempProdLock = productLock || productLockEngine({ name: selectedProduct }, stylePreset);
+      const prompt = getCompiledFlowPromptInternal(clip, bible, evaluatedClips.length, tempCharLock, tempProdLock);
       const requiredBlocks = [
         'CONTINUITY BLOCK:',
         'CHARACTER BLOCK:',
@@ -490,7 +615,7 @@ export default function ScriptWriter({ products = [] }) {
               if (language === 'Gujarati') {
                 clip.voiceover = `"વેપારીઓ માટે ખાસ ૪૦% સુધીનું મોટું ડિસ્કાઉન્ટ માર્જિન અને ફ્રી હોમ ડિલિવરી સુવિધા!"`;
               } else if (language === 'Hindi') {
-                clip.voiceover = `"दुकानदारों के लिए सीधे ४०% तक का थोक मार्जिन और डायरेक्ट फैक्ट्री प्राइस उपलब्ध।"`;
+                clip.voiceover = `"दुकानदारों के लिए सीधे ४०% तक का थोक मार्जिन and डायरेक्ट फैक्ट्री प्राइस उपलब्ध।"`;
               } else {
                 clip.voiceover = `"Get up to 40% retail profit margins with direct factory wholesale prices."`;
               }
@@ -594,7 +719,7 @@ export default function ScriptWriter({ products = [] }) {
               if (language === 'Gujarati') {
                 clip.voiceover = `"જે માનસિક તણાવને દુર કરી આખા પરિવારને સકારાત્મક ઉર્જાથી ભરી દે છે."`;
               } else if (language === 'Hindi') {
-                clip.voiceover = `"जो मानसिक तनाव को दूर कर आपके परिवार में खुशहाली और एकाग्रता लाता है।"`;
+                clip.voiceover = `"જો માનસિક તણાવ કો દુર કર આપકે પરિવાર મેં ખુશાલી ઔર એકાગ્રતા લાતા હૈ।"`;
               } else {
                 clip.voiceover = `"Instantly dissolving daily stress, creating a sanctuary of positive energy for your entire family."`;
               }
@@ -617,7 +742,7 @@ export default function ScriptWriter({ products = [] }) {
               if (language === 'Gujarati') {
                 clip.voiceover = `"અસ્મિતા ગૃહ ઉદ્યોગ: ૨૫+ વર્ષની શુદ્ધતા અને અતૂટ વિશ્વાસ. આજે જ મંગાવો."`;
               } else if (language === 'Hindi') {
-                clip.voiceover = `"अस्मिता गृह उद्योग: पच्चीस वर्षों का भरोसा और शुद्धता। आज ही ऑर्डर करें।"`;
+                clip.voiceover = `"અસ્મિતા ગૃહ ઉદ્યોગ: પચ્ચીસ વર્ષો કા ભરોસા ઔર શુદ્ધતા। આજ હી ઓર્ડર કરેં।"`;
               } else {
                 clip.voiceover = `"Asmita Gruh Udhyog: Celebrating 25+ years of handcrafted purity. Order today."`;
               }
@@ -631,7 +756,18 @@ export default function ScriptWriter({ products = [] }) {
       // 3. RUN FLOW QUALITY ENGINE
       const processedClips = flowQualityEngine(generatedClips, bible, activeProd);
 
-      // 4. CALCULATE CONTINUITY SCORE & OPTIMIZATION CHECKS
+      // 4. CALCULATE LOCKS & REFERENCE FRAME
+      const charLock = characterLockEngine(bible, stylePreset);
+      const prodLock = productLockEngine(productObj, stylePreset);
+      const refFrame = {
+        clipId: isB2B ? 2 : 3,
+        type: isB2B ? "Product Reveal Shot" : "Product Hero Shot",
+        identifiers: "CHAR_001, PROD_001, LOC_001, LIGHT_001"
+      };
+
+      // 5. CALCULATE DRIFT & EFFICIENCY
+      const risks = getDriftRisks(processedClips, bible);
+      const effScore = calculateEfficiencyScore(processedClips, bible, risks);
       const initialScore = calculateContinuityScore(processedClips, bible);
       const initialChecks = getOptimizationChecks(processedClips, bible);
 
@@ -639,6 +775,11 @@ export default function ScriptWriter({ products = [] }) {
       setClips(processedClips);
       setContinuityScore(initialScore);
       setOptimizationChecks(initialChecks);
+      setCharacterLock(charLock);
+      setProductLock(prodLock);
+      setReferenceFrame(refFrame);
+      setDriftRisks(risks);
+      setEfficiencyScore(effScore);
       setIsGenerating(false);
       setActiveTab('storyboard');
     }, 1500);
@@ -649,35 +790,50 @@ export default function ScriptWriter({ products = [] }) {
     handleGenerateScript();
   }, []);
 
-  // Recalculate score and checks if Bible fields are modified manually in UI
+  // Recalculate score, checks, drift risks, and efficiency scores if Bible fields or Locks are modified manually in UI
   useEffect(() => {
     if (sceneBible && clips.length > 0) {
       const score = calculateContinuityScore(clips, sceneBible);
       const checks = getOptimizationChecks(clips, sceneBible);
+      const risks = getDriftRisks(clips, sceneBible);
+      const effScore = calculateEfficiencyScore(clips, sceneBible, risks);
+      
       setContinuityScore(score);
       setOptimizationChecks(checks);
+      setDriftRisks(risks);
+      setEfficiencyScore(effScore);
     }
-  }, [sceneBible, clips]);
+  }, [sceneBible, clips, characterLock, productLock, isBibleLocked]);
 
-  // Private compiled prompt generator helper
-  const getCompiledFlowPromptInternal = (clip, bible, totalClipsCount) => {
+  // Private compiled prompt generator helper with Reference Frame coordinates and Locks
+  const getCompiledFlowPromptInternal = (clip, bible, totalClipsCount, charLockVal, prodLockVal) => {
     if (!bible) return '';
     
+    const activeCharLock = charLockVal || characterLock || { faceShape: "", age: "", gender: "", hair: "", skinTone: "", clothing: "", accessories: "" };
+    const activeProdLock = prodLockVal || productLock || { shape: "", packaging: "", color: "", logoPosition: "", size: "" };
+    
+    // Every Flow prompt must begin with the Reference Frame coord identifiers
+    const referenceInheritanceHeader = `Reference Frame: CHAR_001, PROD_001, LOC_001, LIGHT_001. Maintain absolute visual identity from reference frame.\n`;
+    
     const continuityBlock = `[CONTINUITY BLOCK: Google Flow AI visual continuity anchor key. Clip ${clip.id} of ${totalClipsCount} in sequence. Style preset: ${stylePreset}. Aspect ratio 16:9 or 9:16 matching video format.]`;
-    const characterBlock = `[CHARACTER BLOCK: Main character is ${bible.mainCharacter}, gender: ${bible.gender}, age: ${bible.age}, appearance: ${bible.characterAppearance}, facial features: ${bible.facialFeatures}, wearing ${bible.clothing}.]`;
+    
+    const characterBlock = `[CHARACTER BLOCK: Main character is ${bible.mainCharacter}, gender: ${bible.gender}, age: ${bible.age}, appearance: ${bible.characterAppearance}, facial features: ${bible.facialFeatures}, wearing ${bible.clothing}. CHARACTER LOCK PARAMS: Face Shape: ${activeCharLock.faceShape}, Hair: ${activeCharLock.hair}, Skin Tone: ${activeCharLock.skinTone}, Accessories: ${activeCharLock.accessories}.]`;
+    
     const environmentBlock = `[ENVIRONMENT BLOCK: Location is ${bible.environment}, background details: ${bible.background}.]`;
     const lightingBlock = `[LIGHTING BLOCK: ${bible.lighting}.]`;
     const cameraBlock = `[CAMERA BLOCK: Camera shot is ${clip.cameraMovement}, camera style is ${bible.cameraStyle}, visual transition: ${clip.transition}.]`;
     const actionBlock = `[ACTION BLOCK: ${clip.action}]`;
-    const productBlock = `[PRODUCT BLOCK: ${clip.productVisible ? `Product on display: ${bible.productDetails}` : 'Focus is on the character and environment, product is out of frame'}.]`;
+    
+    const productBlock = `[PRODUCT BLOCK: ${clip.productVisible ? `Product on display: ${bible.productDetails}. PRODUCT LOCK PARAMS: Shape: ${activeProdLock.shape}, Packaging: ${activeProdLock.packaging}, Color: ${activeProdLock.color}, Logo Position: ${activeProdLock.logoPosition}, Size: ${activeProdLock.size}` : 'Focus is on the character and environment, product is out of frame'}.]`;
+    
     const cinematicDetailsBlock = `[CINEMATIC DETAILS BLOCK: Cinematic rendering style, high-end commercial quality, photorealistic, 8k, movie grade. Negative prompts: no scene changes, no character changes, no costume changes, no location changes, no style changes, cartoon, anime, low quality, blurry, watermark, text overlay.]`;
 
-    return `${continuityBlock} ${characterBlock} ${environmentBlock} ${lightingBlock} ${cameraBlock} ${actionBlock} ${productBlock} ${cinematicDetailsBlock}`;
+    return `${referenceInheritanceHeader}${continuityBlock} ${characterBlock} ${environmentBlock} ${lightingBlock} ${cameraBlock} ${actionBlock} ${productBlock} ${cinematicDetailsBlock}`;
   };
 
   // Sync Master Scene Bible fields into Google Flow prompts whenever the Bible or Clips update
   const getCompiledFlowPrompt = (clip) => {
-    return getCompiledFlowPromptInternal(clip, sceneBible, clips.length);
+    return getCompiledFlowPromptInternal(clip, sceneBible, clips.length, characterLock, productLock);
   };
 
   const handleBibleFieldChange = (field, value) => {
@@ -687,18 +843,58 @@ export default function ScriptWriter({ products = [] }) {
     }));
   };
 
-  // Export full script as clean markdown string
+  const handleCharLockChange = (field, value) => {
+    setCharacterLock(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleProdLockChange = (field, value) => {
+    setProductLock(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  // Export full script as clean markdown string (Upgraded to FLOW PRODUCTION PACKAGE PRO)
   const getMarkdownContent = () => {
-    if (!sceneBible || clips.length === 0) return '';
+    if (!sceneBible || clips.length === 0 || !characterLock || !productLock || !referenceFrame) return '';
     
     let md = `================================================\n`;
-    md += `           FLOW DIRECTOR PACKAGE\n`;
+    md += `           FLOW PRODUCTION PACKAGE PRO\n`;
     md += `================================================\n\n`;
     md += `# Campaign Script & Storyboard: ${topic}\n`;
     md += `**Product Focus:** ${selectedProduct === 'custom' ? customProduct : selectedProduct}\n`;
     md += `**Video Type:** ${videoType} | **Duration:** ${duration} | **Style Preset:** ${stylePreset}\n`;
-    md += `**Flow Continuity Score:** ${continuityScore}/100\n\n`;
+    md += `**Flow Continuity Score:** ${continuityScore}/100 | **Credit Efficiency Score:** ${efficiencyScore}/100\n\n`;
     
+    md += `================================================\n`;
+    md += `## 🎯 FLOW SHOT REFERENCE FRAME\n`;
+    md += `================================================\n`;
+    md += `- **Anchor Clip:** Clip ${referenceFrame.clipId} (${referenceFrame.type})\n`;
+    md += `- **Coordinate Identifiers:** ${referenceFrame.identifiers}\n`;
+    md += `- **Rule:** Prepend all prompts with the inheritance header to maintain absolute visual identity.\n\n`;
+
+    md += `================================================\n`;
+    md += `## 🔒 CHARACTER LOCK PARAMETERS (characterLockEngine)\n`;
+    md += `================================================\n`;
+    md += `- **Face Shape:** ${characterLock.faceShape}\n`;
+    md += `- **Age:** ${characterLock.age} | **Gender:** ${characterLock.gender}\n`;
+    md += `- **Hair Style:** ${characterLock.hair}\n`;
+    md += `- **Skin Tone:** ${characterLock.skinTone}\n`;
+    md += `- **Clothing details:** ${characterLock.clothing}\n`;
+    md += `- **Accessories:** ${characterLock.accessories}\n\n`;
+
+    md += `================================================\n`;
+    md += `## 🔒 PRODUCT LOCK PARAMETERS (productLockEngine)\n`;
+    md += `================================================\n`;
+    md += `- **Visual Shape:** ${productLock.shape}\n`;
+    md += `- **Packaging Type:** ${productLock.packaging}\n`;
+    md += `- **Packaging Color:** ${productLock.color}\n`;
+    md += `- **Brand Logo Position:** ${productLock.logoPosition}\n`;
+    md += `- **Product Dimension/Size:** ${productLock.size}\n\n`;
+
     md += `================================================\n`;
     md += `## 📋 MASTER SCENE BIBLE (Consistency Anchor)\n`;
     md += `================================================\n`;
@@ -714,6 +910,13 @@ export default function ScriptWriter({ products = [] }) {
     md += `- **Color Palette:** ${sceneBible.colorPalette}\n`;
     md += `- **Mood:** ${sceneBible.mood}\n`;
     md += `- **Product Details:** ${sceneBible.productDetails}\n\n`;
+
+    md += `================================================\n`;
+    md += `## ⚠️ VISUAL DRIFT RISK ANALYSIS\n`;
+    md += `================================================\n`;
+    md += `- **Character Drift Risk:** ${driftRisks.character}\n`;
+    md += `- **Product Drift Risk:** ${driftRisks.product}\n`;
+    md += `- **Environment Drift Risk:** ${driftRisks.environment}\n\n`;
 
     md += `================================================\n`;
     md += `## 🚫 NEGATIVE PROMPT (Use for all clips in Google Flow)\n`;
@@ -757,18 +960,23 @@ export default function ScriptWriter({ products = [] }) {
       md += `\`\`\`text\n${getCompiledFlowPrompt(clip)}\n\`\`\`\n\n`;
     });
     
-    md += `Generated by Asmita Gruh Udhyog AI Marketing Operations Center - Flow AI Quality Engine.\n`;
+    md += `Generated by Asmita Gruh Udhyog AI Marketing Operations Center - Flow AI Shot Reference Engine.\n`;
     md += `WhatsApp: +91 63522 91433 | 25+ Years of Purity & Trust`;
     return md;
   };
 
   // Export full script as JSON string
   const getJSONContent = () => {
-    if (!sceneBible || clips.length === 0) return '';
+    if (!sceneBible || clips.length === 0 || !characterLock || !productLock || !referenceFrame) return '';
     
     const output = {
-      exportType: "FLOW DIRECTOR PACKAGE",
+      exportType: "FLOW PRODUCTION PACKAGE PRO",
       flowContinuityScore: continuityScore,
+      flowCreditEfficiencyScore: efficiencyScore,
+      referenceFrame: referenceFrame,
+      characterLock: characterLock,
+      productLock: productLock,
+      visualDriftRisks: driftRisks,
       negativePrompt: "no scene changes, no character changes, no costume changes, no location changes, no style changes, cartoon, anime, low quality, blurry, watermark, text overlay",
       productionNotes: [
         "Use same seed if supported",
@@ -1271,11 +1479,168 @@ export default function ScriptWriter({ products = [] }) {
                 ))}
               </div>
             </div>
+
+            {/* FLOW SHOT REFERENCE HUD PANEL */}
+            {referenceFrame && characterLock && productLock && (
+              <div className="glass-panel p-6 border-l-4 border-l-[var(--saffron)] flex flex-col gap-4 relative">
+                <div className="flex justify-between items-center border-b border-[var(--border-gold)] pb-3">
+                  <div className="flex items-center gap-2">
+                    <Layers className="text-[var(--saffron)]" size={20} />
+                    <div>
+                      <h4 className="font-semibold text-base text-[var(--saffron)]">🎯 FLOW SHOT REFERENCE HUD</h4>
+                      <p className="text-[10px] text-[var(--text-secondary)] uppercase tracking-wider font-mono">
+                        Shot Reference System & Visual Lock Control
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {/* Reference Frame Coordinate Identifier display */}
+                  <div className="px-3 py-1.5 rounded-lg bg-[rgba(242,101,34,0.1)] border border-[rgba(242,101,34,0.3)] text-xs text-[var(--saffron)] font-mono font-semibold">
+                    REF ID: {referenceFrame.identifiers}
+                  </div>
+                </div>
+
+                {/* Warning Banner if any risk is HIGH */}
+                {(driftRisks.character === 'HIGH' || driftRisks.product === 'HIGH' || driftRisks.environment === 'HIGH') && (
+                  <div className="p-3.5 rounded bg-[rgba(239,68,68,0.1)] border border-[rgba(239,68,68,0.25)] text-xs text-red-400 flex items-start gap-2 animate-pulse">
+                    <AlertCircle size={16} className="text-red-500 shrink-0 mt-0.5" />
+                    <div>
+                      <strong className="block mb-0.5">HIGH DRIFT RISK DETECTED:</strong>
+                      {driftRisks.character === 'HIGH' && <span>Character parameters are underspecified. </span>}
+                      {driftRisks.product === 'HIGH' && <span>Product visibility rules violated (under 70% of scenes or consecutive invisible scenes). </span>}
+                      {driftRisks.environment === 'HIGH' && <span>Environment/Background parameters are missing or brief. </span>}
+                      <span className="block mt-1 font-semibold text-[var(--text-primary)]">Please lock context and verify detailed fields to prevent Google Flow from changing visual styles between clips.</span>
+                    </div>
+                  </div>
+                )}
+
+                {/* HUD Locks and Drift Risks layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
+                  
+                  {/* Character Lock Column */}
+                  <div className="flex flex-col gap-3 p-3.5 rounded-lg bg-[rgba(255,255,255,0.01)] border border-[rgba(212,175,55,0.05)]">
+                    <div className="flex justify-between items-center border-b border-[rgba(212,175,55,0.1)] pb-2 mb-1">
+                      <span className="text-xs font-bold text-[var(--primary)] uppercase tracking-wider">🔒 CHARACTER LOCK</span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${
+                        driftRisks.character === 'HIGH' ? 'bg-red-500/25 text-red-400 border border-red-500/30' :
+                        driftRisks.character === 'MEDIUM' ? 'bg-orange-500/25 text-orange-400 border border-orange-500/30' :
+                        'bg-emerald-500/25 text-emerald-400 border border-emerald-500/30'
+                      }`}>
+                        {driftRisks.character} DRIFT
+                      </span>
+                    </div>
+                    
+                    <div className="flex flex-col gap-2">
+                      {[
+                        { key: 'faceShape', label: 'Face Shape' },
+                        { key: 'age', label: 'Age / Gender', displayVal: `${characterLock.age} / ${characterLock.gender}`, readOnly: true },
+                        { key: 'hair', label: 'Hair Style' },
+                        { key: 'skinTone', label: 'Skin Tone' },
+                        { key: 'clothing', label: 'Clothing Details' },
+                        { key: 'accessories', label: 'Accessories' }
+                      ].map(field => (
+                        <div key={field.key} className="flex flex-col gap-0.5">
+                          <label className="text-[9px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{field.label}</label>
+                          {isBibleLocked || field.readOnly ? (
+                            <span className="text-xs text-[var(--text-primary)] font-medium">
+                              {field.displayVal || characterLock[field.key]}
+                            </span>
+                          ) : (
+                            <input 
+                              type="text" 
+                              className="form-input text-xs py-1 px-2 h-7"
+                              value={characterLock[field.key] || ''}
+                              onChange={e => handleCharLockChange(field.key, e.target.value)}
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Product Lock Column */}
+                  <div className="flex flex-col gap-3 p-3.5 rounded-lg bg-[rgba(255,255,255,0.01)] border border-[rgba(212,175,55,0.05)]">
+                    <div className="flex justify-between items-center border-b border-[rgba(212,175,55,0.1)] pb-2 mb-1">
+                      <span className="text-xs font-bold text-[var(--primary)] uppercase tracking-wider">🔒 PRODUCT LOCK</span>
+                      <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${
+                        driftRisks.product === 'HIGH' ? 'bg-red-500/25 text-red-400 border border-red-500/30' :
+                        driftRisks.product === 'MEDIUM' ? 'bg-orange-500/25 text-orange-400 border border-orange-500/30' :
+                        'bg-emerald-500/25 text-emerald-400 border border-emerald-500/30'
+                      }`}>
+                        {driftRisks.product} DRIFT
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col gap-2">
+                      {[
+                        { key: 'shape', label: 'Visual Shape' },
+                        { key: 'packaging', label: 'Packaging Type' },
+                        { key: 'color', label: 'Packaging Color' },
+                        { key: 'logoPosition', label: 'Logo Position' },
+                        { key: 'size', label: 'Size Dimensions' }
+                      ].map(field => (
+                        <div key={field.key} className="flex flex-col gap-0.5">
+                          <label className="text-[9px] font-semibold text-[var(--text-secondary)] uppercase tracking-wider">{field.label}</label>
+                          {isBibleLocked ? (
+                            <span className="text-xs text-[var(--text-primary)] font-medium">
+                              {productLock[field.key]}
+                            </span>
+                          ) : (
+                            <input 
+                              type="text" 
+                              className="form-input text-xs py-1 px-2 h-7"
+                              value={productLock[field.key] || ''}
+                              onChange={e => handleProdLockChange(field.key, e.target.value)}
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Reference Shot & Inherit Info Column */}
+                  <div className="flex flex-col gap-3.5 p-3.5 rounded-lg bg-[rgba(255,255,255,0.01)] border border-[rgba(212,175,55,0.05)] justify-between">
+                    <div>
+                      <div className="flex justify-between items-center border-b border-[rgba(212,175,55,0.1)] pb-2 mb-3">
+                        <span className="text-xs font-bold text-[var(--saffron)] uppercase tracking-wider">📍 REFERENCE SHOT</span>
+                        <span className={`text-[10px] px-2 py-0.5 rounded font-bold ${
+                          driftRisks.environment === 'HIGH' ? 'bg-red-500/25 text-red-400 border border-red-500/30' :
+                          driftRisks.environment === 'MEDIUM' ? 'bg-orange-500/25 text-orange-400 border border-orange-500/30' :
+                          'bg-emerald-500/25 text-emerald-400 border border-emerald-500/30'
+                        }`}>
+                          {driftRisks.environment} ENV DRIFT
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col gap-2.5">
+                        <div className="p-3 rounded bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.02)]">
+                          <span className="text-[10px] font-bold text-[var(--primary)] uppercase tracking-wider block mb-1">Anchor Frame Source</span>
+                          <span className="text-xs text-[var(--text-primary)] font-semibold block">Clip {referenceFrame.clipId}</span>
+                          <span className="text-[11px] text-[var(--text-secondary)] mt-0.5 block">{referenceFrame.type}</span>
+                        </div>
+
+                        <div className="text-[11.5px] text-[var(--text-secondary)] leading-relaxed bg-[rgba(242,101,34,0.03)] p-2.5 rounded border border-[rgba(242,101,34,0.1)]">
+                          <strong className="text-[var(--saffron)] font-semibold">Visual Inheritance:</strong>
+                          <p className="mt-1">Every clip compiles with a coordinate-link header pointing to this reference shot, prompting Flow to lock lighting, face shape, and product logo coordinates.</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded bg-[rgba(212,175,55,0.05)] border border-[rgba(212,175,55,0.15)] text-[10px] text-[var(--text-secondary)] leading-normal">
+                      <strong className="text-[var(--primary)] uppercase block mb-1">Surat Factory Operations Info</strong>
+                      Manufactured by Asmita Gruh Udhyog. Registered trust symbol and logo centered on wholesale shipping containers.
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            )}
+
             {/* FLOW QUALITY MONITOR */}
             <div className="glass-panel p-6 border border-[var(--border-gold)] rounded-xl flex flex-col md:flex-row gap-6 items-center">
               
               {/* Score Circular/Radial display */}
-              <div className="flex flex-col items-center justify-center p-4 bg-[rgba(255,255,255,0.01)] rounded-xl border border-[rgba(212,175,55,0.1)] w-full md:w-1/3 text-center">
+              <div className="flex flex-col items-center justify-center p-4 bg-[rgba(255,255,255,0.01)] rounded-xl border border-[rgba(212,175,55,0.1)] w-full md:w-1/4 text-center">
                 <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mb-2">Flow Continuity Score</span>
                 <div className="relative flex items-center justify-center w-28 h-28">
                   {/* SVG circular track */}
@@ -1315,6 +1680,50 @@ export default function ScriptWriter({ products = [] }) {
                   <div className="mt-3 flex items-center gap-1.5 p-2 rounded bg-[rgba(16,185,129,0.1)] border border-[rgba(16,185,129,0.2)] text-[10px] text-emerald-400 font-semibold leading-tight">
                     <CheckCircle2 size={14} className="shrink-0 text-emerald-500" />
                     <span>High Quality Continuity Guard Active</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Credit Efficiency dial */}
+              <div className="flex flex-col items-center justify-center p-4 bg-[rgba(255,255,255,0.01)] rounded-xl border border-[rgba(212,175,55,0.1)] w-full md:w-1/4 text-center">
+                <span className="text-[10px] font-bold text-[var(--text-secondary)] uppercase tracking-widest mb-2">Credit Efficiency</span>
+                <div className="relative flex items-center justify-center w-28 h-28">
+                  <svg className="w-full h-full transform -rotate-90">
+                    <circle 
+                      cx="56" 
+                      cy="56" 
+                      r="48" 
+                      stroke="rgba(255,255,255,0.05)" 
+                      strokeWidth="8" 
+                      fill="transparent" 
+                    />
+                    <circle 
+                      cx="56" 
+                      cy="56" 
+                      r="48" 
+                      stroke={efficiencyScore >= 80 ? "var(--primary)" : efficiencyScore >= 60 ? "var(--saffron)" : "#ef4444"} 
+                      strokeWidth="8" 
+                      fill="transparent" 
+                      strokeDasharray="301.59"
+                      strokeDashoffset={301.59 * (1 - efficiencyScore / 100)}
+                      className="transition-all duration-1000 ease-out"
+                    />
+                  </svg>
+                  <div className="absolute flex flex-col items-center">
+                    <span className="text-3xl font-extrabold text-[var(--text-primary)]">{efficiencyScore}%</span>
+                    <span className="text-[10px] font-semibold text-[var(--text-secondary)]">Score</span>
+                  </div>
+                </div>
+
+                {efficiencyScore < 70 ? (
+                  <div className="mt-3 flex items-center gap-1.5 p-2 rounded bg-[rgba(239,68,68,0.1)] border border-[rgba(239,68,68,0.2)] text-[10px] text-red-400 font-semibold leading-tight">
+                    <AlertCircle size={14} className="shrink-0 text-red-500" />
+                    <span>High Credit Waste/Regen Risk.</span>
+                  </div>
+                ) : (
+                  <div className="mt-3 flex items-center gap-1.5 p-2 rounded bg-[rgba(16,185,129,0.1)] border border-[rgba(16,185,129,0.2)] text-[10px] text-emerald-400 font-semibold leading-tight">
+                    <CheckCircle2 size={14} className="shrink-0 text-emerald-500" />
+                    <span>High Credit Efficiency Score</span>
                   </div>
                 )}
               </div>
